@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="layout/template :: head"/>
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul th:replace="layout/template :: sidebar"/>
+            <!-- End of Sidebar -->
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav th:replace="layout/template :: topbar"/>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="d-flex mb-4">
+                            <h1 class="h3 text-gray-800" th:text="#{exercisemode}"></h1>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 th:text="#{details}"></h5>
+                                    </div>
+                                    <div class="card-body table-responsive">
+                                        <form th:object="${exercisemode}">
+                                            <div class='row'>
+                                                <div class='col'>
+                                                    <div class="form-group">
+                                                        <label for="idExerciseMode" th:text="#{key}"></label>
+                                                        <input type="number" class="form-control" id="idExerciseMode" name="idExerciseMode" th:field="*{idExerciseMode}" th:value="*{idExerciseMode}" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class='col'>
+                                                    <div class="form-group">
+                                                        <label for="description" th:text="#{description}"></label>
+                                                        <input type="text" class="form-control" id="description" name="description" th:field="*{description}" th:value="*{description}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a th:replace="layout/template :: scroll-top"/>
+        <div th:replace="layout/template :: scripts"/>
+    </body>
+</html>

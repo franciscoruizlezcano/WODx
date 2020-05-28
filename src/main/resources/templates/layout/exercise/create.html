@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="layout/template :: head"/>
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul th:replace="layout/template :: sidebar"/>
+            <!-- End of Sidebar -->
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav th:replace="layout/template :: topbar"/>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="d-flex mb-4">
+                            <h1 class="h3 text-gray-800" th:text="#{exercise}"></h1>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 th:text="#{create}"></h5>
+                                    </div>
+                                    <div class="card-body table-responsive">
+                                        <form th:action="@{/exercise}" method="POST" th:object="${exercise}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                                            <input type="hidden" name="idExercise" th:field="*{idExercise}" th:value="*{idExercise}">
+                                            <input type="hidden" name="ubication" th:field="*{ubication}" th:value="*{ubication}">
+                                                <div class='row'>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label for="idExercise" th:text="#{key}"></label>
+                                                            <input type="number" class="form-control" th:field="*{idExercise}" th:value="*{idExercise}" required disabled>
+                                                                <div class="valid-feedback" th:text="#{valid}"></div>
+                                                                <div class="invalid-feedback" th:if="${#fields.hasErrors('idExercise')}" th:errors="*{idExercise}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label for="description" th:text="#{description}"></label>
+                                                            <input type="text" class="form-control" id="description" name="description" th:field="*{description}" th:value="*{description}" required>
+                                                                <div class="valid-feedback" th:text="#{valid}"></div>
+                                                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class='row'>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label th:text="#{file}"></label>
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input" id="file" name="file">
+                                                                <label class="custom-file-label" for="file" th:text="#{selectfile}"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label th:text="#{typeexercise}"></label>
+                                                            <select class="form-control" name="idTypeExercise" id="idCountry" th:field="*{typeexercise.idTypeExercise}" required>
+                                                                <option th:each="item : ${typeexerciseList}" th:value="${item.idTypeExercise}" th:text="${item.description}"></option>
+                                                            </select>
+                                                            <div class="valid-feedback" th:text="#{valid}"></div>
+                                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeexercise.idTypeExercise')}" th:errors="*{typeexercise.idTypeExercise}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" th:text="#{send}"></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a th:replace="layout/template :: scroll-top"/>
+        <div th:replace="layout/template :: scripts"/>
+    </body>
+</html>

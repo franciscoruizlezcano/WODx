@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="layout/template :: head"/>
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul th:replace="layout/template :: sidebar"/>
+            <!-- End of Sidebar -->
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav th:replace="layout/template :: topbar"/>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="d-flex mb-4">
+                            <h1 class="h3 text-gray-800" th:text="#{company.user}"></h1>
+                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/company/user/create}" class="ml-auto btn btn-success mb-0" th:text="#{create}"/>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="table" style="width:100%" id="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th th:text="#{username}"></th>
+                                                    <th th:text="#{fullname}"></th>
+                                                    <th th:text="#{company}"></th>
+                                                    <th th:text="#{creationdate}"></th>
+                                                    <th th:text="#{status}"></th>
+                                                    <th th:text="#{actions}"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="item, counter : ${userList}">
+                                                    <td th:text="${counter.count}"></td>
+                                                    <td th:text="${item.username}"></td>
+                                                    <td th:text="${item.person.name} + ' ' + ${item.person.lastname}"></td>
+                                                    <td th:text="${item.company} ? ${item.company.description} : ''"></td>
+                                                    <td th:text="${item.creationdate}"></td>
+                                                    <td th:text="${item.status}"></td>
+                                                    <td class="d-sm-flex align-items-center justify-content-center">
+                                                        <a th:href="@{/company/user/} + ${item.idUser}" class="btn btn-datatable btn-icon mr-2">
+                                                            <i class="fas fa-info-circle"></i>
+                                                        </a>
+                                                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/company/user/edit/} + ${item.idUser}" class="btn btn-datatable btn-icon mr-2">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form method="POST" class='delete' th:action="@{/company/user/delete/} + ${item.idUser}" sec:authorize="hasRole('ROLE_ADMIN')">
+                                                            <button type="submit" class="btn btn-datatable btn-icon"><i class="fas fa-trash"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a th:replace="layout/template :: scroll-top"/>
+        <section th:replace="layout/template :: scripts"/>
+        <script th:if="${param.error}">
+            Swal.fire('[[#{warning}]]', '[[#{errordelete}]]', 'warning')
+        </script>
+    </body>
+</html>

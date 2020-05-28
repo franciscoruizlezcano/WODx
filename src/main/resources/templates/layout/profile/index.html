@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="layout/template :: head"/>
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul th:replace="layout/template :: sidebar"/>
+            <!-- End of Sidebar -->
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav th:replace="layout/template :: topbar"/>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-4 text-gray-800" th:text="#{myprofile}"></h1>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" th:text="#{myprofile}"></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-auto">
+                                                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" />
+                                            </div>
+                                            <div class="col">
+                                                <div class="mb-2">
+                                                    <label class="form-label text-bold" th:text="${user.username}"></label><hr>
+                                                    <span th:text="${user.company} ? '${user.company.description} - ' : '' + ${user.typeUser.description}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label" th:text="#{fullname}"></label>
+                                            <span th:text="${user.person.name} + ' ' + ${user.person.lastname}"></span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label" th:text="#{email}"></label>
+                                            <span th:text="${user.person.email}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a th:replace="layout/template :: scroll-top"/>
+        <div th:replace="layout/template :: scripts"/>
+    </body>
+</html>

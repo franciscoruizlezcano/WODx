@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="layout/template :: head"/>
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul th:replace="layout/template :: sidebar"/>
+            <!-- End of Sidebar -->
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav th:replace="layout/template :: topbar"/>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="d-flex mb-4">
+                            <h1 class="h3 text-gray-800" th:text="#{workout}"></h1>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 th:text="#{update}"></h5>
+                                    </div>
+                                    <div class="card-body table-responsive">
+                                        <form th:action="@{/workout}" method="POST" th:object="${workout}" id="form" class="needs-validation" novalidate>
+                                            <input type="hidden" id="idWorkout" name="idWorkout" th:field="*{idWorkout}" th:value="*{idWorkout}"/>
+                                            <input type="hidden" name="coach" th:field="*{coach}" th:value="*{coach}"/>
+                                            <input type="hidden" name="date" th:field="*{date}" th:value="*{date}">
+                                            <input type="hidden" name="workoutExerciseList" id="workoutExerciseList"/>
+                                            <input type="hidden" name="athleteGroup" id="athleteGroup"/>
+                                            <input type="hidden" name="traininglevelGroup" id="traininglevelGroup"/>
+                                                <div class='row'>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label for="idWorkout" th:text="#{key}"></label>
+                                                            <input type="number" class="form-control" th:value="*{idWorkout}" required disabled/>
+                                                            <div class="valid-feedback" th:text="#{valid}"></div>
+                                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idWorkout')}" th:errors="*{idWorkout}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='col'>
+                                                        <div class="form-group">
+                                                            <label for="description" th:text="#{description}"></label>
+                                                            <input type="text" class="form-control" id="description" name="description" th:field="*{description}" th:value="*{description}" required/>
+                                                            <div class="valid-feedback" th:text="#{valid}"></div>
+                                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" th:if="${coachList}">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label th:text="#{coach}"></label>
+                                                            <select class="form-control" name="idCoach" id="idCoach" th:field="*{coach.idCoach}" required/>
+                                                            <option th:each="item : ${coachList}" th:value="${item.idCoach}" th:text="${item.user.person.name} + ' ' + ${item.user.person.name}"></option>
+                                                            </select>
+                                                            <div class="valid-feedback" th:text="#{valid}"></div>
+                                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('coach.idCoach')}" th:errors="*{coach.idCoach}" th:text="#{invalid}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <section class="mt-4 mb-4 border-1" th:if="${exerciseList}">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label th:text="#{exercise}"></label>
+                                                                <select class="form-control" name="exercise" id="selectExercise" required/>
+                                                                    <option th:each="item : ${exerciseList}" th:value="${item.idExercise}" th:text="${item.description}" ></option>
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 mt-4">
+                                                            <button type="button" class="btn btn-primary" id="btnExercise" onclick="addExercise();" th:text="#{add}"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table class="table table-bordered" style="width:100%" id="tableExercise">
+                                                                <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <th th:text="#{key}"></th>
+                                                                        <th th:text="#{description}"></th>
+                                                                        <th th:text="#{exercisemode}"></th>
+                                                                        <th th:text="#{series}"></th>
+                                                                        <th th:text="#{value}"></th>
+                                                                        <th th:text="#{timeunit}"></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                                <section class="mt-4 mb-4 border-1" th:if="${athleteList}">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label th:text="#{athlete}"></label>
+                                                                <select class="form-control" name="athlete" id="selectAthlete">
+                                                                    <option th:each="item : ${athleteList}" th:value="${item.idAthlete}" th:text="${item.user.person.name} + ' ' + ${item.user.person.lastname}" ></option>
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 mt-4">
+                                                            <button type="button" class="btn btn-primary" id="btnAthlete" onclick="add('selectAthlete', 'tableAthlete');" th:text="#{add}"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table class="table table-bordered" style="width:100%" id="tableAthlete">
+                                                                <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <th th:text="#{key}"></th>
+                                                                        <th th:text="#{athlete}"></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                                <section class="mt-4 mb-4 border-1" th:if="${traininglevelList}">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label th:text="#{traininglevel}"></label>
+                                                                <select class="form-control" name="selectTraininglevel" id="selectTraininglevel">
+                                                                    <option th:each="item : ${traininglevelList}" th:value="${item.idTrainingLevel}" th:text="${item.description}" ></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 mt-4">
+                                                            <button type="button" class="btn btn-primary" id="btnTraininglevel" onclick="add('selectTraininglevel', 'tableTraininglevel');" th:text="#{add}"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table class="table table-bordered" style="width:100%" id="tableTraininglevel">
+                                                                <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <th th:text="#{key}"></th>
+                                                                        <th th:text="#{traininglevel}"></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                                <button type="submit" class="btn btn-primary" th:text="#{send}"></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a th:replace="layout/template :: scroll-top"/>
+        <div th:replace="layout/template :: scripts"/>
+        <script th:inline="javascript">
+                $("#form").submit(function( event ) {
+
+                    var coach = {
+                        idCoach : $("#idCoach").val()
+                    };
+
+                    var athlete = {
+                        idAthlete : ""
+                    };
+
+                    var traininglevel = {
+                        idTrainingLevel : ""
+                    };
+
+                    var exercisemode = {
+                        idExerciseMode : ""
+                    };
+
+                    var timeunit = {
+                        idTimeUnit : ""
+                    };
+
+                    var exercise = {
+                        idExercise : ""
+                    };
+
+                    var workoutExercise = {
+                        exercise : "",
+                        series: "",
+                        value: "",
+                        exercisemode: "",
+                        timeunit : "",
+                    }
+
+
+
+                    if ($("#tableExercise tbody tr").length > 0){
+                        if($("#tableAthlete tbody tr").length > 0 || $("#tableTraininglevel tbody tr").length > 0){
+                            
+                            var traininglevelGroup = [];
+                            var athleteGroup = [];
+                            let workoutExerciseList = [];
+                            
+                            $("#tableExercise tbody tr").each(function(index) {
+                                var idExercise, idExerciseMode, series, value, idTimeUnit;
+                                $(this).children("td").each(function (index2) {
+                                    switch (index2) {
+                                        case 0:
+                                            idExercise = $(this).text();
+                                            break;
+                                        case 2:
+                                            idExerciseMode = $(this).children(':first-child').val();
+                                            break;
+                                        case 3:
+                                            series = $(this).children(':first-child').val();
+                                            break;
+                                        case 4:
+                                            value = $(this).children(':first-child').val();
+                                            break;
+                                        case 5:
+                                            idTimeUnit = $(this).children(':first-child').val();
+                                            break;
+                                    }
+                                    
+                                });
+                                
+                                exercisemode.idExerciseMode = idExerciseMode;
+                                timeunit.idTimeUnit = idTimeUnit;
+                                
+                                workoutExercise.exercisemode = exercisemode;
+                                workoutExercise.series = series;
+                                workoutExercise.value = value;
+                                workoutExercise.timeunit = timeunit;
+                                
+                                workoutExerciseList[index] = workoutExercise;
+                            });
+                            
+                            
+                            $("#tableAthlete tbody tr").each(function(index) {
+                                var idAthlete;
+                                $(this).children("td").each(function (index2) {
+                                    switch (index2) {
+                                        case 0:
+                                            idAthlete = $(this).text();
+                                            break;
+                                    }
+                                    
+                                });
+                                console.log("idAthlete: " + idAthlete);
+                                athlete.idAthlete = idAthlete;
+                                athleteGroup[index] = athlete;
+                                console.log(athleteGroup[index]);
+                            });
+                            
+                            $("#tableTraininglevel tbody tr").each(function(index) {
+                                var idTrainingLevel;
+                                $(this).children("td").each(function (index2) {
+                                    switch (index2) {
+                                        case 0:
+                                            idTrainingLevel = $(this).text();
+                                            break;
+                                    }
+                                    
+                                });
+                                console.log("idTrainingLevel: " + idTrainingLevel);
+                                traininglevel.idTrainingLevel = idTrainingLevel;
+                                traininglevelGroup[index] = traininglevel;
+                                console.log(traininglevelGroup[index]);
+                            });
+
+                            console.log(athleteGroup);
+                            console.log(traininglevelGroup);
+
+                            $("#athleteGroup").val(JSON.stringify(athleteGroup));
+                            $("#traininglevelGroup").val(JSON.stringify(traininglevelGroup));
+                            $("#workoutExerciseList").val(JSON.stringify(workoutExerciseList));
+
+                            console.log($("#workoutExerciseList").val());
+                            console.log($("#athleteGroup").val());
+                            console.log($("#traininglevelGroup").val());
+
+
+                            /*$("#workoutExerciseList").val(JSON.stringify(workoutExerciseList));
+                            $("#athleteGroup").val(JSON.stringify(athleteGroup));
+                            $("#traininglevelGroup").val(JSON.stringify(traininglevelGroup));
+
+                            console.log($("#workoutExerciseList").val());
+                            console.log($("#athleteGroup").val());
+                            console.log($("#traininglevelGroup").val());*/
+                        }else{
+                            event.preventDefault();
+                            Swal.fire([[#{warning}]], [[#{completetable}]], "warning");
+                        }
+                    }else{
+                        event.preventDefault();
+                        Swal.fire([[#{warning}]], [[#{exercisetable}]], "warning");
+                    }
+                });
+            
+            function add(nameSelect, nameTable) {
+                let select = document.getElementById(nameSelect);
+                let table = document.getElementById(nameTable);
+                let selected = select.options[select.selectedIndex];
+                let row = table.children[1].insertRow(0);
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                cell1.innerHTML = selected.value;
+                cell2.innerHTML = selected.textContent;
+                selected.remove();
+            }
+
+            function addExercise() {
+                let exercisemodeList = [[${exercisemodeList}]];
+                let timeunitList = [[${timeunitList}]];
+                let select = document.getElementById("selectExercise");
+                let table = document.getElementById("tableExercise");
+                let selected = select.options[select.selectedIndex];
+
+                //Create elements on row
+                let exercisemodeTable = document.createElement("select");
+                let valueTable = document.createElement("input");
+                let seriesTable = document.createElement("input");
+                let timeunitTable = document.createElement("select");
+                
+
+                exercisemodeTable.className = "form-control";
+                exercisemodeTable.onchange = function(){
+                    if (exercisemodeTable.value == '2'){
+                        timeunitTable.style.display = "block";
+                    } else{
+                        timeunitTable.style.display = "none";
+                        timeunitTable.selectedIndex = "";
+                    }
+                };
+
+
+                valueTable.className = "form-control";
+                valueTable.type = "number";
+                valueTable.min = "1";
+                
+                seriesTable.className = "form-control";
+                seriesTable.type = "number";
+                seriesTable.min = "1";
+                
+                timeunitTable.className = "form-control";
+
+                //exercisemodeTable <select>
+                for (var i = 0; i < exercisemodeList.length; i++) {
+                    let option = document.createElement("option");
+                    option.value = exercisemodeList[i]["idExerciseMode"];
+                    option.text = exercisemodeList[i]["description"];
+                    exercisemodeTable.appendChild(option);
+                }
+                
+                //timeunitTable <select>
+                for (var i = 0; i < timeunitList.length; i++) {
+                    let option = document.createElement("option");
+                    option.value = timeunitList[i]["idTimeUnit"];
+                    option.text = timeunitList[i]["description"];
+                    timeunitTable.appendChild(option);
+                }
+
+                //Create input series
+
+                let row = table.children[1].insertRow(0);
+                
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+                let cell4 = row.insertCell(3);
+                let cell5 = row.insertCell(4);
+                let cell6 = row.insertCell(5);
+                
+                cell1.innerHTML = selected.value;
+                cell2.innerHTML = selected.textContent;
+                cell3.appendChild(exercisemodeTable);
+                cell4.appendChild(valueTable);
+                cell5.appendChild(seriesTable);
+                cell6.appendChild(timeunitTable);
+                
+                timeunitTable.style.display = "none";
+            }
+
+        </script>
+    </body>
+</html>
