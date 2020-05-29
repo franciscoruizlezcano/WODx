@@ -46,10 +46,11 @@ public class TypeexerciseController {
     public String save(@Valid Typeexercise typeexercise, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/typeexercise?error";
         } else {
             typeexerciseService.save(typeexercise);
-            response = "redirect:/typeexercise";
+            response = "redirect:/typeexercise?success";
         }
         return response;
     }
@@ -72,19 +73,27 @@ public class TypeexerciseController {
     public String update(@Valid Typeexercise typeexercise, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + typeexercise.getIdTypeExercise();
+            log.info(errors.toString());
+            response = "redirect:/typeexercise?error";
         } else {
             typeexerciseService.save(typeexercise);
-            response = "redirect:/typeexercise";
+            response = "redirect:/typeexercise?succes";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Typeexercise typeexercise = typeexerciseService.findById(new Typeexercise(id));
-        typeexerciseService.delete(typeexercise);
-        return "redirect:/typeexercise";
+        String response;
+        try{
+            Typeexercise typeexercise = typeexerciseService.findById(new Typeexercise(id));
+            typeexerciseService.delete(typeexercise);
+            response = "redirect:/typeexercise?succes";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/typeexercise?error";
+        }
+        return response;
     }
 
 }

@@ -48,10 +48,11 @@ public class ExercisemodeController {
     public String save(@Valid Exercisemode exercisemode, Model model, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/exercisemode?error";
         } else {
             exercisemodeService.save(exercisemode);
-            response = "redirect:/exercisemode";
+            response = "redirect:/exercisemode?success";
         }
         return response;
     }
@@ -59,18 +60,14 @@ public class ExercisemodeController {
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Integer id) {
         Exercisemode exercisemode = exercisemodeService.findById(new Exercisemode(id));
-        
         model.addAttribute(exercisemode);
-        
         return "layout/exercisemode/show";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(Model model, @PathVariable("id") Integer id) {
         Exercisemode exercisemode = exercisemodeService.findById(new Exercisemode(id));
-        
         model.addAttribute(exercisemode);
-        
         return "layout/exercisemode/edit";
     }
 
@@ -78,20 +75,26 @@ public class ExercisemodeController {
     public String update( @Valid Exercisemode exercisemode, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + exercisemode.getIdExerciseMode();
+            log.info(errors.toString());
+            response = "redirect:/exercisemode?error";
         } else {
             exercisemodeService.save(exercisemode);
-            response = "redirect:/exercisemode";
+            response = "redirect:/exercisemode?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Exercisemode exercisemode = exercisemodeService.findById(new Exercisemode(id));
-        
-        exercisemodeService.delete(exercisemode);
-        
-        return "redirect:/exercisemode";
+        String response;
+        try{
+            Exercisemode exercisemode = exercisemodeService.findById(new Exercisemode(id));
+            exercisemodeService.delete(exercisemode);
+            response = "redirect:/exercisemode?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/exercisemode?error";
+        }
+        return response;
     }
 }

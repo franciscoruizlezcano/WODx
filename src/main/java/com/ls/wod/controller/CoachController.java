@@ -88,7 +88,8 @@ public class CoachController {
     public String save(@Valid Coach coach, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/coach?error";
         } else {
             coachService.save(coach, false);
             
@@ -108,7 +109,7 @@ public class CoachController {
             emailService.sendMessageWithThymeleafTemplate(mail);
             
             
-            response = "redirect:/coach";
+            response = "redirect:/coach?success";
         }
         return response;
     }
@@ -131,24 +132,24 @@ public class CoachController {
     public String update(@Valid Coach coach, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + coach.getIdCoach();
+            response = "redirect:/coach?error";
         } else {
             coachService.save(coach, false);
-            response = "redirect:/coach";
+            response = "redirect:/coach?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        String response = "redirect:/coach";
+        String response;
         try {
             Coach coach = coachService.findById(new Coach(id));
             coachService.delete(coach);
+            response = "redirect:/coach?error";
         } catch (Exception e) {
             response = "redirect:/coach?error";
         }
-
         return response;
     }
 

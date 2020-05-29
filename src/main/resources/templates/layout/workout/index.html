@@ -70,8 +70,5 @@
         <!-- Scroll to Top Button-->
         <a th:replace="layout/template :: scroll-top"/>
         <section th:replace="layout/template :: scripts"/>
-        <script th:if="${param.error}">
-            Swal.fire('[[#{warning}]]', '[[#{errordelete}]]', 'warning');
-        </script>
     </body>
 </html>

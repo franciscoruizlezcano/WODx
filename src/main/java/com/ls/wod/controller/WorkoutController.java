@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author francisco
  */
+
 @Slf4j
 @Controller
 @RequestMapping("/workout")
@@ -54,15 +55,6 @@ public class WorkoutController {
     
     @Autowired
     TraininglevelService traininglevelService;
-
-    @Autowired
-    WorkoutAthleteService workoutAthleteService;
-
-    @Autowired
-    WorkoutTraininglevelService workoutTraininglevelService;
-
-    @Autowired
-    WorkoutExerciseService workoutExerciseService;
 
     @Autowired
     UserService userService;
@@ -133,7 +125,8 @@ public class WorkoutController {
     public String save(@Valid Workout workout,  String athleteJson, String traininglevelJson,  String workoutExerciseJson, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/workout?error";
         } else {
             workoutService.save(workout);
 
@@ -180,7 +173,7 @@ public class WorkoutController {
 
             workoutService.save(workout);
 
-            response = "redirect:/workout";
+            response = "redirect:/workout?success";
         }
         return response;
     }
@@ -203,19 +196,26 @@ public class WorkoutController {
     public String update(@Valid Workout workout, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + workout.getIdWorkout();
+            response = "redirect:/workout?error";
         } else {
             workoutService.save(workout);
-            response = "redirect:/workout";
+            response = "redirect:/workout?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Workout workout = workoutService.findById(new Workout(id));
-        workoutService.delete(workout);
-        return "redirect:/workout";
+        String response;
+        try{
+            Workout workout = workoutService.findById(new Workout(id));
+            workoutService.delete(workout);
+            response = "redirect:/workout?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/workout?error";
+        }
+        return response;
     }
 
 }

@@ -50,7 +50,6 @@ public class CompanyController {
     @GetMapping("/create")
     public String create(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
         model.addAttribute("company", new Company());
-        
         return "layout/company/create";
     }
 
@@ -58,10 +57,11 @@ public class CompanyController {
     public String save(@Valid Company company, Model model, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/company?error";
         } else {
             companyService.save(company);
-            response = "redirect:/company";
+            response = "redirect:/company?success";
         }
         return response;
     }
@@ -84,19 +84,27 @@ public class CompanyController {
     public String update(@Valid Company company, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + company.getIdCompany();
+            log.info(errors.toString());
+            response = "redirect:/company?error";
         } else {
             companyService.save(company);
-            response = "redirect:/company";
+            response = "redirect:/company?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Company company = companyService.findById(new Company(id));
-        companyService.delete(company);
-        return "redirect:/company";
+        String response;
+        try {
+            Company company = companyService.findById(new Company(id));
+            companyService.delete(company);
+            response = "redirect:/company?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/company?error";
+        }
+        return response;
     }
 
 }

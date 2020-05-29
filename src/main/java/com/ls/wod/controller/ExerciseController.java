@@ -48,10 +48,8 @@ public class ExerciseController {
     @GetMapping("/create")
     public String create(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
         List<Typeexercise> typeexerciseList = (List<Typeexercise>) typeexerciseService.findAll();
-
         model.addAttribute(typeexerciseList);
         model.addAttribute("exercise", new Exercise());
-
         return "layout/exercise/create";
     }
 
@@ -59,54 +57,56 @@ public class ExerciseController {
     public String save(@Valid Exercise exercise, @RequestParam("file") MultipartFile file, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/exercise?error";
         } else {
             exercise.setUbication(uploadFileService.save(file));
             exerciseService.save(exercise);
-            response = "redirect:/exercise";
+            response = "redirect:/exercise?success";
         }
         return response;
     }
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Integer id) {
-
         Exercise exercise = exerciseService.findById(new Exercise(id));
-
         model.addAttribute(exercise);
-
         return "layout/exercise/show";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(Model model, @PathVariable("id") Integer id) {
+
         Exercise exercise = exerciseService.findById(new Exercise(id));
-
         model.addAttribute(exercise);
-
         return "layout/exercise/edit";
     }
 
     @PostMapping("/edit")
     public String update(@Valid Exercise exercise, Errors errors) {
         String response;
-
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + exercise.getIdExercise();
+            response = "redirect:/exercise?error";
         } else {
             exerciseService.save(exercise);
-
-            response = "redirect:/exercise";
+            response = "redirect:/exercise?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Exercise exercise = exerciseService.findById(new Exercise(id));
-        uploadFileService.delete(exercise.getUbication());
-        exerciseService.delete(exercise);
-        return "redirect:/exercise";
+        String response;
+        try{
+            Exercise exercise = exerciseService.findById(new Exercise(id));
+            uploadFileService.delete(exercise.getUbication());
+            exerciseService.delete(exercise);
+            response = "redirect:/exercise?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/exercise?error";
+        }
+        return response;
     }
 
 }

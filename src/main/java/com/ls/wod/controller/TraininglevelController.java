@@ -37,13 +37,11 @@ public class TraininglevelController {
     public String index(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
         String response = "redirect:/403";
         User user = userService.findByUsername(userLog.getUsername());
-
         if (user.getCompany() != null) {
             List<Traininglevel> traininglevelList = (List<Traininglevel>) traininglevelService.findAll();
             model.addAttribute(traininglevelList);
             response = "layout/traininglevel/index";
         }
-
         return response;
     }
 
@@ -51,7 +49,6 @@ public class TraininglevelController {
     public String create(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
         String response = "redirect:/403";
         User user = userService.findByUsername(userLog.getUsername());
-
         if (user.getCompany() != null) {
             Traininglevel traininglevel = new Traininglevel();
             traininglevel.setCompany(user.getCompany());
@@ -67,10 +64,11 @@ public class TraininglevelController {
     public String save(@Valid Traininglevel traininglevel, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/traininglevel?error";
         } else {
             traininglevelService.save(traininglevel);
-            response = "redirect:/traininglevel";
+            response = "redirect:/traininglevel?success";
         }
         return response;
     }
@@ -93,19 +91,27 @@ public class TraininglevelController {
     public String update(@Valid Traininglevel traininglevel, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + traininglevel.getIdTrainingLevel();
+            log.info(errors.toString());
+            response = "redirect:/traininglevel?error";
         } else {
             traininglevelService.save(traininglevel);
-            response = "redirect:/traininglevel";
+            response = "redirect:/traininglevel?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Traininglevel traininglevel = traininglevelService.findById(new Traininglevel(id));
-        traininglevelService.delete(traininglevel);
-        return "redirect:/traininglevel";
+        String response;
+        try{
+            Traininglevel traininglevel = traininglevelService.findById(new Traininglevel(id));
+            traininglevelService.delete(traininglevel);
+            response = "redirect:/traininglevel?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/traininglevel?error";
+        }
+        return response;
     }
 
 }

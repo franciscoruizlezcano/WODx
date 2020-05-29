@@ -46,10 +46,11 @@ public class WeightunitController {
     public String save(@Valid Weightunit weightunit, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/weightunit?error";
         } else {
             weightunitService.save(weightunit);
-            response = "redirect:/weightunit";
+            response = "redirect:/weightunit?success";
         }
         return response;
     }
@@ -72,19 +73,27 @@ public class WeightunitController {
     public String update(@Valid Weightunit weightunit, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + weightunit.getIdWeightUnit();
+            log.info(errors.toString());
+            response = "redirect:/weightunit?error";
         } else {
             weightunitService.save(weightunit);
-            response = "redirect:/weightunit";
+            response = "redirect:/weightunit?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Short id) {
-        Weightunit weightunit = weightunitService.findById(new Weightunit(id));
-        weightunitService.delete(weightunit);
-        return "redirect:/weightunit";
+        String response;
+        try{
+            Weightunit weightunit = weightunitService.findById(new Weightunit(id));
+            weightunitService.delete(weightunit);
+            response = "redirect:/weightunit?success";
+        }catch (Exception e) {
+            log.info(e.toString());
+            response = "redirect:/weightunit?error";
+        }
+        return response;
     }
 
 }

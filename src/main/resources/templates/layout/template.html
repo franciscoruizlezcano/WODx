@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" th:href="@{/dist/libs/DataTables/datatables.min.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/dist/css/sb-admin-2.min.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/dist/libs/sweetalert2/sweetalert2.min.css}">
-            <link rel="stylesheet" type="text/css" th:href="@{/dist/css/app.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/dist/css/app.css}"/>
     </head>
     <body id="page-top">
         <!-- Page Wrapper -->
@@ -276,23 +276,22 @@
             <script th:src="@{/dist/js/sb-admin-2.min.js}"></script>
             <script th:src="@{/dist/libs/sweetalert2/sweetalert2.min.js}"></script>
             <script th:src="@{/dist/js/app.js}"></script>
-            <script>
-                if (document.getElementsByClassName('delete')) {
-                    let forms = document.getElementsByClassName('delete');
+            <script th:inline="javascript">
+                if ($('.delete')) {
+                    let forms = $('.delete');
                     let validation = Array.prototype.filter.call(forms, (formDelete) => {
                         formDelete.addEventListener('submit', (event) => {
                             event.preventDefault();
                             Swal.fire({
-                                title: "[[#{alert.title}]]",
-                                text: "[[#{alert.text}]]",
+                                title: [[#{alert.title}]],
+                                text: [[#{alert.text}]],
                                 icon: 'warning',
                                 showCancelButton: true,
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
-                                confirmButtonText: "[[#{alert.button}]]"
+                                confirmButtonText: [[#{alert.button}]]
                             }).then((result) => {
                                 if (result.value) {
-                                    Swal.fire("[[#{delete}]]", '[[#{alert.message}]]', 'success');
                                     formDelete.submit();
                                 }
                             })
@@ -300,6 +299,14 @@
                     });
 
                 }
+            </script>
+
+            <script th:inline="javascript" th:if="${#request.getParameter('success')}">
+                Swal.fire([[#{success}]], [[#{alert.message}]], 'success');
+            </script>
+
+            <script th:inline="javascript" th:if="${#request.getParameter('error')}">
+                Swal.fire([[#{warning}]], [[#{alert.error}]], 'warning');
             </script>
         </section>
     </body>

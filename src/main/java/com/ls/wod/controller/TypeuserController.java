@@ -46,10 +46,11 @@ public class TypeuserController {
     public String save(@Valid Typeuser typeuser, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/typeuser?error";
         } else {
             typeuserService.save(typeuser);
-            response = "redirect:/typeuser";
+            response = "redirect:/typeuser?success";
         }
         return response;
     }
@@ -72,19 +73,27 @@ public class TypeuserController {
     public String update(@Valid Typeuser typeuser, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + typeuser.getIdTypeUser();
+            log.info(errors.toString());
+            response = "redirect:/typeuser?error";
         } else {
             typeuserService.save(typeuser);
-            response = "redirect:/typeuser";
+            response = "redirect:/typeuser?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Typeuser typeuser = typeuserService.findById(new Typeuser(id));
-        typeuserService.delete(typeuser);
-        return "redirect:/typeuser";
+        String response;
+        try{
+            Typeuser typeuser = typeuserService.findById(new Typeuser(id));
+            typeuserService.delete(typeuser);
+            response = "redirect:/typeuser?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/typeuser?error";
+        }
+        return response;
     }
 
 }

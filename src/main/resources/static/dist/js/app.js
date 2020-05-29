@@ -1,9 +1,12 @@
-$(document).ready(function () {
+$(window).ready(function () {
     init();
-
     function init() {
-
+        loader();
         initComponents();
+    }
+
+    function loader(){
+        $(".loader").addClass("hidden");
     }
 
     function initComponents() {

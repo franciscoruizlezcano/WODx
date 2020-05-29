@@ -100,7 +100,7 @@ public class AdminController {
             
             emailService.sendMessageWithThymeleafTemplate(mail);
             
-            response = "redirect:/admin";
+            response = "redirect:/admin?success";
         }
         return response;
     }
@@ -132,19 +132,24 @@ public class AdminController {
             response = "redirect:/admin?error";
         } else {
             userService.save(user, false);
-            response = "redirect:/admin";
+            response = "redirect:/admin?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
-        String response = "redirect:/user";
-        User user = userService.findById(new User(id));
-        
-        if (!user.getUsername().equals(userLog.getUsername())) {
-            userService.delete(user);
-        }else{
+        String response;
+        try {
+            User user = userService.findById(new User(id));
+            if (!user.getUsername().equals(userLog.getUsername())) {
+                userService.delete(user);
+                response = "redirect:/admin?success";
+            }else{
+                response = "redirect:/admin?error";
+            }
+        }catch (Exception e){
+            log.info(e.toString());
             response = "redirect:/admin?error";
         }
 

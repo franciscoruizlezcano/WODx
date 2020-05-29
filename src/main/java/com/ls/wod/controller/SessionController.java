@@ -29,18 +29,21 @@ public class SessionController {
     @GetMapping
     public String index(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
         List<Session> sessionList = (List<Session>) sessionService.findAll();
-        
         model.addAttribute(sessionList);
-        
         return "layout/session/index";
     }
     
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Session session = sessionService.findById(new Session(id));
-        
-        sessionService.delete(session);
-        
-        return "redirect:/session";
+        String response;
+        try{
+            Session session = sessionService.findById(new Session(id));
+            sessionService.delete(session);
+            response = "redirect:/session?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "redirect:/session?error";
+        }
+        return response;
     }
 }

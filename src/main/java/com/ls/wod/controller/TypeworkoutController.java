@@ -46,10 +46,11 @@ public class TypeworkoutController {
     public String save(@Valid Typeworkout typeworkout, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/typeworkout?error";
         } else {
             typeworkoutService.save(typeworkout);
-            response = "redirect:/typeworkout";
+            response = "redirect:/typeworkout?success";
         }
         return response;
     }
@@ -72,18 +73,26 @@ public class TypeworkoutController {
     public String update( @Valid Typeworkout typeworkout, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + typeworkout.getIdTypeWorkout();
+            response = "redirect:/typeworkout?error";
         } else {
             typeworkoutService.save(typeworkout);
-            response = "redirect:/typeworkout";
+            response = "redirect:/typeworkout?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        Typeworkout typeworkout = typeworkoutService.findById(new Typeworkout(id));
-        typeworkoutService.delete(typeworkout);
-        return "redirect:/typeworkout";
+        String response;
+        try{
+            Typeworkout typeworkout = typeworkoutService.findById(new Typeworkout(id));
+            typeworkoutService.delete(typeworkout);
+            response = "typeworkout?success";
+        }catch (Exception e){
+            log.info(e.toString());
+            response = "typeworkout?error";
+        }
+
+        return response;
     }
 }

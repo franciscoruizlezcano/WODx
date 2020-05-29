@@ -95,7 +95,8 @@ public class AthleteController {
     public String save(@Valid Athlete athlete, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/create";
+            log.info(errors.toString());
+            response = "redirect:/athlete?error";
         } else {
             athlete = athleteService.save(athlete, false);
             
@@ -114,7 +115,7 @@ public class AthleteController {
             
             emailService.sendMessageWithThymeleafTemplate(mail);
             
-            response = "redirect:/athlete";
+            response = "redirect:/athlete?success";
         }
         return response;
     }
@@ -137,24 +138,24 @@ public class AthleteController {
     public String update(@Valid Athlete athlete, Errors errors) {
         String response;
         if (errors.hasErrors()) {
-            response = "redirect:/edit/" + athlete.getIdAthlete();
+            response = "redirect:/athlete?error";
         } else {
             athleteService.save(athlete, false);
-            response = "redirect:/athlete";
+            response = "redirect:/athlete?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        String response = "redirect:/athlete";
+        String response;
         try {
             Athlete athlete = athleteService.findById(new Athlete(id));
             athleteService.delete(athlete);
+            response = "redirect:/athlete?success";
         } catch (Exception e) {
             response = "redirect:/athlete?error";
         }
-
         return response;
     }
 }

@@ -106,7 +106,7 @@ public class CompanyUserController {
 
             emailService.sendMessageWithThymeleafTemplate(mail);
 
-            response = "redirect:/company/user";
+            response = "redirect:/company/user?success";
         }
         return response;
     }
@@ -141,18 +141,18 @@ public class CompanyUserController {
             response = "redirect:/company/user?error";
         } else {
             userService.save(user, false);
-            response = "redirect:/company/user";
+            response = "redirect:/company/user?success";
         }
         return response;
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User userLog) {
-        String response = "redirect:/company/user";
+        String response;
         User user = userService.findById(new User(id));
-
         if (!user.getUsername().equals(userLog.getUsername())) {
             userService.delete(user);
+            response = "redirect:/company/user?success";
         } else {
             response = "redirect:/company/user?error";
         }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="layout/template :: head" />
 
@@ -20,6 +19,20 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
+                    <section id="alerts">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="completetable" style="display: none;">
+                            <strong>[[#{warning}]]</strong> [[#{completetable}]]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="exercisetable" style="display: none;">
+                            <strong>[[#{warning}]]</strong> [[#{exercisetable}]]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </section>
                     <div class="d-flex mb-4">
                         <h1 class="h3 text-gray-800" th:text="#{workout}"></h1>
                     </div>
@@ -30,10 +43,8 @@
                                     <h5 th:text="#{update}"></h5>
                                 </div>
                                 <div class="card-body table-responsive">
-                                    <form th:action="@{/workout}" method="POST" th:object="${workout}" id="form"
-                                        class="needs-validation" novalidate>
-                                        <input type="hidden" id="idWorkout" name="idWorkout" th:field="*{idWorkout}"
-                                            th:value="*{idWorkout}" />
+                                    <form th:action="@{/workout}" method="POST" th:object="${workout}" id="formworkout" class="needs-validation" novalidate>
+                                        <input type="hidden" id="idWorkout" name="idWorkout" th:field="*{idWorkout}" th:value="*{idWorkout}" />
                                         <input type="hidden" name="coach" th:field="*{coach}" th:value="*{coach}" />
                                         <input type="hidden" name="date" th:field="*{date}" th:value="*{date}">
                                         <input type="hidden" name="workoutExerciseJson" id="workoutExerciseJson" />
@@ -82,7 +93,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 mt-4">
-                                                            <button type="button" class="btn btn-primary" id="btnExercise" onclick="addExercise();" th:text="#{add}"></button>
+                                                            <button type="button" class="btn btn-primary" id="btnExercise" onclick="addRow();" th:text="#{add}"></button>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -179,239 +190,11 @@
         <!-- Scroll to Top Button-->
         <a th:replace="layout/template :: scroll-top"/>
         <div th:replace="layout/template :: scripts"/>
+        <script th:src="@{/dist/js/workout.js}"></script>
         <script th:inline="javascript">
-            $("#form").submit(function (event) {
-
-                let coach = { idCoach: $("#idCoach").val() };
-
-                let athlete = { idAthlete: "" };
-
-                let traininglevel = { idTrainingLevel: "" };
-
-                let exercisemode = { idExerciseMode: "" };
-
-                let timeunit = { idTimeUnit: "" };
-
-                let exercise = { idExercise: "" };
-
-                let workout = { idWorkout: "0" };
-
-                let workoutExercise = { workout: workout, exercise: "", series: "", value: "", exercisemode: "", timeunit: "", }
-
-                if ($("#tableExercise tbody").length > 0) {
-                    if ($("#tableAthlete tbody").length > 0 || $("#tableTraininglevel tbody").length > 0) {
-
-                        let workoutExerciseJson = new Array();
-                        let athleteJson = new Array();
-                        let traininglevelJson = new Array();
-                        
-                        $("#tableExercise tbody tr").each(function (index) {
-
-                            var idExercise = 0;
-                            var idExerciseMode = 0;
-                            var series = 0;
-                            var value = 0;
-                            var idTimeUnit = 0;
-
-                            $(this).children("td").each(function (index2) {
-                                switch (index2) {
-                                    case 0:
-                                        idExercise = $(this).text();
-                                        break;
-                                    case 2:
-                                        idExerciseMode = $(this).children(':first-child').val();
-                                        break;
-                                    case 3:
-                                        series = $(this).children(':first-child').val();
-                                        break;
-                                    case 4:
-                                        value = $(this).children(':first-child').val();
-                                        break;
-                                    case 5:
-                                        idTimeUnit = $(this).children(':first-child').val();
-                                        break;
-                                }
-                            });
-
-                            exercise.idExercise = idExercise;
-                            exercisemode.idExerciseMode = idExerciseMode;
-
-                            if (idExerciseMode == '1') {
-                                timeunit.idTimeUnit = "0";
-                            } else {
-                                timeunit.idTimeUnit = idTimeUnit;
-                            }
-
-                            workoutExercise.exercise = exercise;
-                            workoutExercise.exercisemode = exercisemode;
-                            workoutExercise.series = series;
-                            workoutExercise.value = value;
-                            workoutExercise.timeunit = timeunit;
-
-                            console.log("workoutExercise["+ index +"]: " + JSON.stringify(workoutExercise));
-                            workoutExerciseJson.push(workoutExercise);
-                            console.log(workoutExerciseJson);
-                        });
-
-                        $("#tableAthlete tbody tr").each(function (index) {
-                            var idAthlete;
-                            $(this).children("td").each(function (index2) {
-                                switch (index2) {
-                                    case 0:
-                                        idAthlete = $(this).text();
-                                        break;
-                                }
-
-                            });
-                            athlete.idAthlete = idAthlete;
-                            athleteJson.push(athlete);
-                        });
-
-                        for (let index = 0; index < $("#tableTraininglevel tbody tr").length; index++) {
-                            for (let index2 = 0; index2 < $("#tableTraininglevel tbody tr").children("td").length; index2++) {
-                                var idTrainingLevel;
-                                switch (index2) {
-                                    case 0:
-                                        idTrainingLevel = $("#tableTraininglevel tbody tr td").children(index2).text();
-                                        break;
-                                }
-                                traininglevel.idTrainingLevel = idTrainingLevel;
-                                traininglevelJson.push(traininglevel);
-                            }
-                        }
-
-                        /*$("#tableTraininglevel tbody tr").each(function (index) {
-                            var idTrainingLevel;
-                            $(this).children("td").each(function (index2) {
-                                switch (index2) {
-                                    case 0:
-                                        idTrainingLevel = $(this).text();
-                                        break;
-                                }
-
-                            });
-                            traininglevel.idTrainingLevel = idTrainingLevel;
-                            traininglevelJson.push(traininglevel);
-                        });*/
-
-                        $("#athleteJson").val(JSON.stringify(athleteJson));
-                        $("#traininglevelJson").val(JSON.stringify(traininglevelJson));
-                        $("#workoutExerciseJson").val(JSON.stringify(workoutExerciseJson));
-
-                        console.log($("#workoutExerciseJson").val());
-                        console.log($("#athleteJson").val());
-                        console.log($("#traininglevelJson").val());
-                    } else {
-                        event.preventDefault();
-                        Swal.fire([[#{ warning }]], [[#{ completetable }]], "warning");
-                    }
-                } else {
-                    event.preventDefault();
-                    Swal.fire([[#{ warning }]], [[#{ exercisetable }]], "warning");
-                }
-            });
-
-            function add(nameSelect, nameTable) {
-                let select = document.getElementById(nameSelect);
-                let table = document.getElementById(nameTable);
-                let selected = select.options[select.selectedIndex];
-
-                let row = table.children[1].insertRow(0);
-                let cell1 = row.insertCell(0);
-                let cell2 = row.insertCell(1);
-
-                cell1.innerHTML = selected.value;
-                cell2.innerHTML = selected.textContent;
-
-                selected.remove();
-
-                if(selected.length == 0){
-                    selected.children.length = "none";
-                }
+            function addRow(){
+                addExercise([[${exercisemodeList}]], [[${timeunitList}]]);
             }
-
-            function addExercise() {
-                let exercisemodeList = [[${ exercisemodeList }]];
-                let timeunitList = [[${ timeunitList }]];
-                let select = document.getElementById("selectExercise");
-                let table = document.getElementById("tableExercise");
-                let selected = select.options[select.selectedIndex];
-
-                //Create elements on row
-                let exercisemodeTable = document.createElement("select");
-                let valueTable = document.createElement("input");
-                let seriesTable = document.createElement("input");
-                let timeunitTable = document.createElement("select");
-
-
-                exercisemodeTable.className = "form-control";
-                exercisemodeTable.onchange = function () {
-                    if (exercisemodeTable.value == '2') {
-                        timeunitTable.style.display = "block";
-                    } else {
-                        timeunitTable.style.display = "none";
-                        timeunitTable.selectedIndex = "";
-                        timeunitTable.value = "";
-                    }
-                };
-
-
-                valueTable.className = "form-control";
-                valueTable.type = "number";
-                valueTable.min = "1";
-
-                seriesTable.className = "form-control";
-                seriesTable.type = "number";
-                seriesTable.min = "1";
-
-                timeunitTable.className = "form-control";
-
-                //exercisemodeTable <select>
-                for (var i = 0; i < exercisemodeList.length; i++) {
-                    let option = document.createElement("option");
-                    option.value = exercisemodeList[i]["idExerciseMode"];
-                    option.text = exercisemodeList[i]["description"];
-                    exercisemodeTable.appendChild(option);
-                }
-
-                //timeunitTable <select>
-                for (var i = 0; i < timeunitList.length; i++) {
-                    let option = document.createElement("option");
-                    option.value = timeunitList[i]["idTimeUnit"];
-                    option.text = timeunitList[i]["description"];
-                    timeunitTable.appendChild(option);
-                }
-
-                //Create input series
-                let tbody = table.children[1];
-                let cantRows = 0;
-                console.log(cantRows);
-                if (tbody.length > 0) {
-                    cantRows = tbody.length;
-                }
-                let row = table.children[1].insertRow(cantRows);
-
-                let cell1 = row.insertCell(0);
-                let cell2 = row.insertCell(1);
-                let cell3 = row.insertCell(2);
-                let cell4 = row.insertCell(3);
-                let cell5 = row.insertCell(4);
-                let cell6 = row.insertCell(5);
-
-                cell1.innerHTML = selected.value;
-                cell2.innerHTML = selected.textContent;
-                cell3.appendChild(exercisemodeTable);
-                cell4.appendChild(valueTable);
-                cell5.appendChild(seriesTable);
-                cell6.appendChild(timeunitTable);
-
-                timeunitTable.style.display = "none";
-
-                if(selected.children.length == 0){
-                    selected.display = "none";
-                }
-            }
-
         </script>
     </body>
 </html>

@@ -60,14 +60,14 @@ public class ProfileController {
 
     @PostMapping
     public String update(@Valid User user, Errors errors) {
-        String response = null;
+        String response;
         if (errors.hasErrors()) {
             log.info(user.toString());
             log.info(errors.toString());
-            response = "redirect:/profile";
+            response = "redirect:/profile?error";
         } else {
             userService.save(user, false);
-            response = "redirect:/profile";
+            response = "redirect:/profile?success";
         }
         return response;
     }
