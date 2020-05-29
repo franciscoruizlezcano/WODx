@@ -36,13 +36,11 @@ public class WorkoutExercise implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @NotEmpty
     @Column(name = "value")
     private int value;
     
     @Basic(optional = false)
     @NotNull
-    @NotEmpty
     @Column(name = "series")
     private int series;
     

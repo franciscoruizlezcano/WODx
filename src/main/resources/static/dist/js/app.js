@@ -1,12 +1,9 @@
 $(document).ready(function () {
-
-
     init();
 
     function init() {
 
         initComponents();
-
     }
 
     function initComponents() {
@@ -43,4 +40,3 @@ $(document).ready(function () {
         }
     }
 });
-

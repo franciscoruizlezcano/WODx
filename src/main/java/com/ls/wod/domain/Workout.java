@@ -54,6 +54,15 @@ public class Workout implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Coach coach;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "workout", fetch = FetchType.LAZY)
+    private List<WorkoutTraininglevel> workoutTraininglevelList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "workout", fetch = FetchType.LAZY)
+    private List<WorkoutAthlete> workoutAthleteList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "workout", fetch = FetchType.LAZY)
+    private List<WorkoutExercise> workoutExerciseList;
+
     public Workout() {
     }
 

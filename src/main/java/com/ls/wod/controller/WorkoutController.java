@@ -1,27 +1,20 @@
 package com.ls.wod.controller;
 
-import com.ls.wod.domain.Athlete;
-import com.ls.wod.domain.Coach;
-import com.ls.wod.domain.Exercise;
-import com.ls.wod.domain.Exercisemode;
-import com.ls.wod.domain.Timeunit;
-import com.ls.wod.domain.Traininglevel;
-import com.ls.wod.domain.User;
-import com.ls.wod.domain.Workout;
-import com.ls.wod.service.AthleteService;
-import com.ls.wod.service.CoachService;
-import com.ls.wod.service.ExerciseService;
-import com.ls.wod.service.ExercisemodeService;
-import com.ls.wod.service.TimeunitService;
-import com.ls.wod.service.TraininglevelService;
-import com.ls.wod.service.UserService;
-import com.ls.wod.service.WorkoutService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.ls.wod.domain.*;
+import com.ls.wod.service.*;
 
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 import javax.validation.Valid;
+
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -36,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author francisco
  */
+@Slf4j
 @Controller
 @RequestMapping("/workout")
 public class WorkoutController {
@@ -60,6 +54,15 @@ public class WorkoutController {
     
     @Autowired
     TraininglevelService traininglevelService;
+
+    @Autowired
+    WorkoutAthleteService workoutAthleteService;
+
+    @Autowired
+    WorkoutTraininglevelService workoutTraininglevelService;
+
+    @Autowired
+    WorkoutExerciseService workoutExerciseService;
 
     @Autowired
     UserService userService;
@@ -113,9 +116,8 @@ public class WorkoutController {
         }
         
         //Set coach null for complete
-        workout.setCoach(coach);
-        
         workout.setDate(new Date());
+        workout.setCoach(coach);
         
         model.addAttribute(exerciseList);
         model.addAttribute(traininglevelList);
@@ -128,12 +130,56 @@ public class WorkoutController {
     }
 
     @PostMapping
-    public String save(@Valid Workout workout, String athleteGroup, String traininglevelGroup, String workoutExerciseList, Errors errors) {
+    public String save(@Valid Workout workout,  String athleteJson, String traininglevelJson,  String workoutExerciseJson, Errors errors) {
         String response;
         if (errors.hasErrors()) {
             response = "redirect:/create";
         } else {
             workoutService.save(workout);
+
+            Gson gson = new Gson();
+
+            workout.setWorkoutAthleteList(new ArrayList<WorkoutAthlete>());
+            workout.setWorkoutTraininglevelList(new ArrayList<WorkoutTraininglevel>());
+            workout.setWorkoutExerciseList(new ArrayList<WorkoutExercise>());
+
+            Type workoutExerciseListType = new TypeToken<ArrayList<WorkoutExercise>>(){}.getType();
+            ArrayList<WorkoutExercise> workoutExerciseList = gson.fromJson(workoutExerciseJson, workoutExerciseListType);
+
+            for (WorkoutExercise workoutexercise: workoutExerciseList){
+                if (workoutexercise.getTimeunit().getIdTimeUnit() == 0){
+                    workoutexercise.setTimeunit(null);
+                }
+                workoutexercise.setWorkout(workout);
+                workout.getWorkoutExerciseList().add(workoutexercise);
+            }
+
+            Type athleteListType = new TypeToken<ArrayList<Athlete>>(){}.getType();
+            ArrayList<Athlete> athleteList = gson.fromJson(athleteJson, athleteListType);
+
+            for (Athlete athlete: athleteList){
+                WorkoutAthlete workoutAthlete = new WorkoutAthlete();
+
+                workoutAthlete.setAthlete(athlete);
+                workoutAthlete.setWorkout(workout);
+
+                workout.getWorkoutAthleteList().add(workoutAthlete);
+            }
+
+            Type traininglevelListType = new TypeToken<ArrayList<Traininglevel>>(){}.getType();
+            ArrayList<Traininglevel> traininglevelList = gson.fromJson(traininglevelJson, traininglevelListType);
+
+            for (Traininglevel traininglevel: traininglevelList) {
+                WorkoutTraininglevel workoutTraininglevel = new WorkoutTraininglevel();
+
+                workoutTraininglevel.setTraininglevel(traininglevel);
+                workoutTraininglevel.setWorkout(workout);
+
+                workout.getWorkoutTraininglevelList().add(workoutTraininglevel);
+            }
+
+            workoutService.save(workout);
+
             response = "redirect:/workout";
         }
         return response;
