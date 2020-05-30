@@ -51,15 +51,6 @@
                                         <input type="hidden" name="athleteJson" id="athleteJson" />
                                         <input type="hidden" name="traininglevelJson" id="traininglevelJson" />
                                         <div class='row'>
-                                            <div class='col'>
-                                                <div class="form-group">
-                                                    <label for="idWorkout" th:text="#{key}"></label>
-                                                    <input type="number" class="form-control" th:value="*{idWorkout}"
-                                                        required disabled />
-                                                    <div class="valid-feedback" th:text="#{valid}"></div>
-                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('idWorkout')}" th:errors="*{idWorkout}" th:text="#{invalid}"></div>
-                                                        </div>
-                                                    </div>
                                                     <div class='col'>
                                                         <div class="form-group">
                                                             <label for="description" th:text="#{description}"></label>
@@ -68,6 +59,20 @@
                                                             <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}" th:text="#{invalid}"></div>
                                                         </div>
                                                     </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="endingdate" th:text="#{endingdate}"></label>
+                                                    <div class="input-group date">
+                                                        <input type="text" class="form-control" name="endingdate" id="endingdate" th:field="*{endingdate}" th:value="*{endingdate}" autocomplete="off" required/>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                        <div class="valid-feedback" th:text="#{valid}"></div>
+                                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('endingdate')}" th:errors="*{endingdate}" th:text="#{invalid}"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                                 </div>
                                                 <div class="row" th:if="${coachList}">
                                                     <div class="col">

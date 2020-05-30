@@ -49,6 +49,12 @@ public class Workout implements Serializable {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private Date date;
+
+    @Basic(optional = false)
+    @Column(name = "endingdate")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    private Date endingdate;
     
     @JoinColumn(name = "idCoach", referencedColumnName = "idCoach")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

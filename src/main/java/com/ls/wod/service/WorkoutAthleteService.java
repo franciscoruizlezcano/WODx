@@ -13,6 +13,8 @@ import java.util.List;
 public interface WorkoutAthleteService extends CrudService<WorkoutAthlete>{
     
     List<WorkoutAthlete> findByAthlete(Athlete athlete);
+
+    List<WorkoutAthlete> findByAthleteAndDay(Athlete athlete);
     
     List<WorkoutAthlete> findByWorkout(Workout workout);
     

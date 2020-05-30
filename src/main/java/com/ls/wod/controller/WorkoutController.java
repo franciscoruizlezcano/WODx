@@ -109,6 +109,7 @@ public class WorkoutController {
         
         //Set coach null for complete
         workout.setDate(new Date());
+        workout.setEndingdate(new Date());
         workout.setCoach(coach);
         
         model.addAttribute(exerciseList);

@@ -16,6 +16,8 @@ public class HandleErrorController implements ErrorController {
 
     public HandleErrorController() {}
 
+    private final String ERROR_PATH = "/error";
+
     @GetMapping("/error")
     public String handleError(HttpServletRequest request) {
         String response;
@@ -55,7 +57,7 @@ public class HandleErrorController implements ErrorController {
 
     @Override
     public String getErrorPath() {
-        return "/error";
+        return this.ERROR_PATH;
     }
 
 }

@@ -6,6 +6,8 @@ import com.ls.wod.domain.WorkoutTraininglevel;
 import com.ls.wod.exception.NotFoundException;
 import com.ls.wod.repository.WorkoutTraininglevelRepository;
 import com.ls.wod.service.WorkoutTraininglevelService;
+
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -31,6 +33,11 @@ public class WorkoutTraininglevelServiceImpl implements WorkoutTraininglevelServ
     @Override
     public List<WorkoutTraininglevel> findByTraininglevel(Traininglevel trainingLevel) {
         return repository.findByTraininglevel(trainingLevel);
+    }
+
+    @Override
+    public List<WorkoutTraininglevel> findByTraininglevelAndDay(Traininglevel trainingLevel) {
+        return repository.findByTraininglevelAndDay(trainingLevel, new Date());
     }
 
     @Override

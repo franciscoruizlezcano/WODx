@@ -1,13 +1,12 @@
 package com.ls.wod.resource;
 
 import com.ls.wod.domain.User;
+import com.ls.wod.dto.AuthDTO;
+import com.ls.wod.dto.UserDTO;
 import com.ls.wod.service.AuthService;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -19,18 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthResource{
     
     @Autowired
-    AuthService service;
-    
-    public HashMap<String, String> login(@RequestBody User user) {
-        String jwt = service.login(user.getUsername(), user.getPassword());
+    AuthService authService;
+
+    @PostMapping
+    public HashMap<String, String> login(@RequestBody AuthDTO user) {
+        String jwt = authService.login(user.getUsername(), user.getPassword());
         HashMap<String, String> map = new HashMap<>();
         map.put("message", jwt);
         return map;
     }
 
     @PostMapping("/logout/{id}")
-    public HashMap<String, String> logout(@RequestBody Integer id) {
-        service.logout(id);
+    public HashMap<String, String> logout(@PathVariable Integer id) {
+        authService.logout(id);
         HashMap<String, String> map = new HashMap<>();
         map.put("message", "User logout");
         return map;

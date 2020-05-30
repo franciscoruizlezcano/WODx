@@ -6,6 +6,8 @@ import com.ls.wod.domain.Workout;
 import com.ls.wod.exception.NotFoundException;
 import com.ls.wod.repository.WorkoutAthleteRepository;
 import com.ls.wod.service.WorkoutAthleteService;
+
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -26,6 +28,12 @@ public class WorkoutAthleteServiceImpl implements WorkoutAthleteService {
     @Transactional(readOnly = true)
     public List<WorkoutAthlete> findByAthlete(Athlete athlete) {
         return repository.findByAthlete(athlete);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<WorkoutAthlete> findByAthleteAndDay(Athlete athlete) {
+        return repository.findByAthleteAndDay(athlete, new Date());
     }
 
     @Override

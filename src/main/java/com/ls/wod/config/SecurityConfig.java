@@ -34,16 +34,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/forgot", "/password/**","/api/**", "/media/**", "/dist/**", "/webjars/**")
+        http
+                .authorizeRequests()
+                    .antMatchers("/forgot", "/password/**", "/media/**", "/api/**","/dist/**", "/webjars/**")
                     .permitAll()
                 .antMatchers("/", "/**")
                     .hasAnyRole("USER", "ADMIN")
                 .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                    .formLogin()
+                        .loginPage("/login")
+                        .permitAll()
                 .and()
-                .exceptionHandling().accessDeniedPage("/403");
+                    .logout()
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                .and()
+                    .exceptionHandling()
+                    .accessDeniedPage("/403")
+                .and()
+                    .csrf();
     }
 }

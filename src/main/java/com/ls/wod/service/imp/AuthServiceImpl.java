@@ -1,6 +1,7 @@
 package com.ls.wod.service.imp;
 
 import com.ls.wod.domain.Session;
+import com.ls.wod.domain.TypeuserRole;
 import com.ls.wod.domain.User;
 import com.ls.wod.exception.AuthorizationException;
 import com.ls.wod.exception.UsernamePasswordException;
@@ -26,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author francisco
  */
 @Slf4j
-@Service("userDetailsService")
-public class AuthServiceImpl implements UserDetailsService, AuthService {
+@Service
+public class AuthServiceImpl implements AuthService {
 
     @Autowired
     UserRepository userRepository;
@@ -75,24 +76,6 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         }
 
         sessionRepository.saveAll(sessions);
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) {
-        UserDetails userDetails = null;
-        User user = userRepository.findByUsername(username).orElseThrow(UsernamePasswordException::new);
-
-        if (user.getTypeuser().getRole() != null || !user.getTypeuser().getRole().isEmpty()) {
-            List<GrantedAuthority> rols = new ArrayList<GrantedAuthority>();
-
-            rols.add(new SimpleGrantedAuthority(user.getTypeuser().getRole()));
-
-            userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), rols);
-        } else {
-            throw new AuthorizationException();
-        }
-        return userDetails;
     }
 
 }

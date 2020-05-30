@@ -15,5 +15,7 @@ public interface WorkoutTraininglevelService extends CrudService<WorkoutTraining
     List<WorkoutTraininglevel> findByWorkout(Workout workout);
     
     List<WorkoutTraininglevel> findByTraininglevel(Traininglevel trainingLevel);
+
+    List<WorkoutTraininglevel> findByTraininglevelAndDay(Traininglevel trainingLevel);
     
 }
