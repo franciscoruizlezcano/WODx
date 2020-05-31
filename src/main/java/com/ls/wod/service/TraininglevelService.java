@@ -11,4 +11,6 @@ import java.util.List;
 
 public interface TraininglevelService extends CrudService<Traininglevel>{
     List<Traininglevel> findByCompany(Company company);
+
+    long countByCompany(Company company);
 }

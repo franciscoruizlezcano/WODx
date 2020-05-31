@@ -18,4 +18,7 @@ public interface CoachRepository extends JpaRepository<Coach, Integer>{
     
     @Query("select c from Coach c where c.user.company = :company")
     Iterable<Coach> findByCompany(@Param("company") Company company);
+
+    @Query("select count(c) from Coach c where c.user.company = :company")
+    long countByCompany(@Param("company") Company company);
 }

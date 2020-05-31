@@ -13,6 +13,8 @@ public interface CoachService extends CrudService<Coach>{
     Coach findByUser(User user);
     
     Iterable<Coach> findByCompany(Company company);
+
+    long countByCompany(Company company);
     
     Coach save(Coach t, boolean crypt);
 }

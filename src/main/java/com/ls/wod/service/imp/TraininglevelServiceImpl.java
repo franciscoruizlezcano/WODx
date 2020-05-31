@@ -29,6 +29,12 @@ public class TraininglevelServiceImpl implements TraininglevelService {
 
     @Override
     @Transactional(readOnly = true)
+    public long countByCompany(Company company) {
+        return repository.countByCompany(company);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Traininglevel> findAll() {
         return repository.findAll();
     }

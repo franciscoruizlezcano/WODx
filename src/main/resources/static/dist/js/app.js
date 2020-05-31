@@ -1,4 +1,4 @@
-$(window).ready(function () {
+window.addEventListener('load', function(){
     init();
     function init() {
         loader();
@@ -41,5 +41,6 @@ $(window).ready(function () {
             });
 
         }
+
     }
 });

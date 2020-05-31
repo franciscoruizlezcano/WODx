@@ -18,4 +18,7 @@ public interface AthleteRepository extends JpaRepository<Athlete, Integer>{
     
     @Query("select a from Athlete a where a.user.company = :company")
     Iterable<Athlete> findByCompany(@Param("company") Company company);
+
+    @Query("select count(a) from Athlete a where a.user.company = :company")
+    long countByCompany(@Param("company") Company company);
 }

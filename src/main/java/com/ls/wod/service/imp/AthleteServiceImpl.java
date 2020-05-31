@@ -40,6 +40,12 @@ public class AthleteServiceImpl implements AthleteService {
 
     @Override
     @Transactional(readOnly = true)
+    public long countByCompany(Company company) {
+        return repository.countByCompany(company);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Athlete> findAll() {
         return repository.findAll();
     }

@@ -37,7 +37,12 @@ public class CoachServiceImpl implements CoachService {
     @Transactional(readOnly = true)
     public Iterable<Coach> findByCompany(Company company) {
         return repository.findByCompany(company);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public long countByCompany(Company company) {
+        return repository.countByCompany(company);
     }
 
     @Override

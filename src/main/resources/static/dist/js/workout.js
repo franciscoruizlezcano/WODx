@@ -116,14 +116,21 @@ function add(nameSelect, nameTable) {
     let table = document.getElementById(nameTable);
     let selected = select.options[select.selectedIndex];
 
-    let row = table.children[1].insertRow(0);
-    let cell1 = row.insertCell(0);
-    let cell2 = row.insertCell(1);
+    if(select.children.length != 0){
+        let row = table.children[1].insertRow(0);
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
 
-    cell1.innerHTML = selected.value;
-    cell2.innerHTML = selected.textContent;
+        cell1.innerHTML = selected.value;
+        cell2.innerHTML = selected.textContent;
 
-    selected.remove();
+        selected.remove();
+        if(select.children.length == 0){
+            select.disabled = true;
+        }
+    }else{
+        select.disabled = true;
+    }
 }
 
 function addExercise(exercisemodeList, timeunitList) {

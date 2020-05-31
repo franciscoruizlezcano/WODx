@@ -15,4 +15,7 @@ import org.springframework.data.repository.query.Param;
 public interface TraininglevelRepository extends JpaRepository<Traininglevel, Integer>{
     @Query("select t from Traininglevel t where t.company = :company")
     List<Traininglevel> findByCompany(@Param("company") Company company);
+
+    @Query("select count(t) from Traininglevel t where t.company = :company")
+    long countByCompany(@Param("company") Company company);
 }

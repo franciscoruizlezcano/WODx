@@ -12,16 +12,21 @@
         <link rel="stylesheet" type="text/css" th:href="@{/dist/css/app.css}"/>
     </head>
     <body id="page-top">
+        <div th:fragment="loader">
+            <div id="overlay">
+                <div class="spinner"></div>
+            </div>
+        </div>
         <!-- Page Wrapper -->
         <div id="wrapper">
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="sidebar">
+            <ul class="navbar-nav bg-gray-900 sidebar sidebar-dark accordion shadow" id="accordionSidebar" th:fragment="sidebar">
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/}">
                     <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
+                        <img class="img-profile rounded-circle" th:src="@{/media/logo-white.png}" style="width:50px;"/>
                     </div>
-                    <div class="sidebar-brand-text mx-3" th:text="#{application}"><sup>1.0</sup></div>
+                    <div class="sidebar-brand-text mx-3"><span th:text="#{application}" class="mr-2"></span><sup>1.0</sup></div>
                 </a>
 
                 <!-- Divider -->
@@ -56,7 +61,6 @@
                             <div class="bg-white py-2 collapse-inner rounded">
                                 <h6 class="collapse-header" th:text="#{users}"></h6>
                                 <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" th:text="#{admin}"></a>
-                                <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/typeuser}" th:text="#{typeuser}"></a>
                                 <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/session}" th:text="#{session}"></a>
                             </div>
                         </div>
@@ -146,7 +150,6 @@
                                 <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/exercisemode}" th:text="#{exercisemode}"></a>
                                 <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/typeexercise}" th:text="#{typeexercise}"></a>
                                 <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/typeworkout}" th:text="#{typeworkout}"></a>
-                                <a class="collapse-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/weightunit}" th:text="#{weightunit}"></a>
                             </div>
                         </div>
                     </li>
@@ -203,20 +206,18 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                                    aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small" sec:authentication="name"></span>
-                                    <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" />
+                                    <i class="fas fa-user"></i>
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" th:href="@{/profile}">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        <span th:text="#{myprofile}"></span>
+                                    <a class="dropdown-item">
+                                        <span class="text-bold p-4" sec:authentication="name"></span>
                                     </a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" th:href="@{/help}">
                                         <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                         <span th:text="#{help}"></span>
                                     </a>
-                                    <div class="dropdown-divider"></div>
                                     <form method="POST" th:action="@{/logout}">
                                         <button type="submit" class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                                             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

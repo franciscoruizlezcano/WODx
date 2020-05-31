@@ -13,6 +13,8 @@ public interface AthleteService extends CrudService<Athlete>{
     Athlete findByUser(User user);
     
     Iterable<Athlete> findByCompany(Company company);
+
+    long countByCompany(Company company);
     
     Athlete save(Athlete t, boolean crypt);
 }

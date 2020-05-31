@@ -1,9 +1,18 @@
+body{
+    width: 100%;
+    overflow-x: hidden;
+}
+
 .bg-grey{
     background-color: #f5f5f5;
 }
 
 .mb-4, .my-4 {
     margin-bottom: 1.5rem !important;
+}
+
+.navbar-dark {
+    background-color: #1f2d41!important;
 }
 
 .card {
@@ -49,6 +58,26 @@ tr th, tr td{
 
 .text-bold{
     font-weight: bold;
+}
+
+ul li {
+    list-style: none;
+}
+
+.todo-ul{
+    margin: 0;
+    padding: 0;
+}
+
+.todo-li{
+    background: #f5f6f8;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+.todo-li:hover{
+    background: #f9f9f9;
 }
 
 .footer {
